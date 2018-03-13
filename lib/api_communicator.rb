@@ -53,10 +53,10 @@ def display_all_characters
   end
 end
 
-display_all_characters
-puts "Enter character: "
-character = gets.chomp
-show_character_movies(character)
+#display_all_characters
+#puts "Enter character: "
+#character = gets.chomp
+#show_character_movies(character)
 
 ## BONUS
 

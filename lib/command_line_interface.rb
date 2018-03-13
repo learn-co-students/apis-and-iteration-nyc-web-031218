@@ -1,10 +1,14 @@
+
+# the welcome method asks whether the user wants to search a movie or character
+# if input is invalid, displays error message
+# otherwise returns the input, which will be used in run.db
 def welcome
   puts "Welcome to the Star Wars Character Search!"
   puts "Are you searching for a movie or a character?"
 
-  input = gets.chomp
+  input = gets.chomp.downcase
 
-  if input.downcase == "movie" || input.downcase == "character"
+  if input == "movie" || input == "character"
     input
   else
     puts "Sorry, please try again"
@@ -12,7 +16,12 @@ def welcome
 end
 
 def get_character_from_user
-  puts "please enter a character"
+  puts "Please enter a character"
   # use gets to capture the user's input. This method should return that input, downcased.
-  search = gets.chomp.downcase
+  character = gets.chomp.downcase
+end
+
+def get_movie_from_user
+  puts "Enter title of movie"
+  title = gets.chomp.downcase
 end

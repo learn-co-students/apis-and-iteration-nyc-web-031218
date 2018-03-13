@@ -9,10 +9,11 @@ def get_character_movies_from_api(character)
   #binding.pry
   # iterate over the character hash to find the collection of `films` for the given
   #   `character`
-  character_hash["results"].select do |character_index|
+  search = character_hash["results"].select do |character_index|
     character_index["name"] == character
-    
+    # binding.pry
   end
+  search = search.first
   # collect those film API urls, make a web request to each URL to get the info
   #  for that film
   # return value of this method should be collection of info about each film.
@@ -20,10 +21,19 @@ def get_character_movies_from_api(character)
   # this collection will be the argument given to `parse_character_movies`
   #  and that method will do some nice presentation stuff: puts out a list
   #  of movies by title. play around with puts out other info about a given film.
+
+  search["films"].collect do |film_urls|
+    films = RestClient.get(film_urls)
+    films_hash = JSON.parse(films)
+  end
 end
 
 def parse_character_movies(films_hash)
-  # some iteration magic and puts out the movies in a nice list
+  # some iteration magic and puts out the movies titles in a nice list
+  films_hash.collect do |film_data|
+    binding.pry
+  end
+  puts "hi"
 end
 
 def show_character_movies(character)

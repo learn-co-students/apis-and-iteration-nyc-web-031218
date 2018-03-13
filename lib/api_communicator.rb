@@ -18,10 +18,23 @@ def get_character_movies_from_api(character)
   } #array
 
   character_film_urls = character_object["films"]
-  binding.pry
+ #  ["https://www.swapi.co/api/films/2/",
+ # "https://www.swapi.co/api/films/6/",
+ # "https://www.swapi.co/api/films/3/",
+ # "https://www.swapi.co/api/films/1/",
+ # "https://www.swapi.co/api/films/7/"]
+
+  character_film_urls.map do |url|
+    film_data = RestClient.get("#{url}")
+    film_parsed = JSON.parse(film_data)
 
 
-  puts "hello"
+    film_parsed.select do |key, value|
+      ["title", "episode_id", "director", "producer", "release_date"].include?(key)
+    end
+  end
+
+
 
   # iterate over the character hash to find the collection of `films` for the given
   #   `character`

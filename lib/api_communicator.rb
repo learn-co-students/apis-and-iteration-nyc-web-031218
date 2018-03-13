@@ -7,7 +7,23 @@ def get_character_movies_from_api(character)
   all_characters = RestClient.get('http://www.swapi.co/api/people/')
   character_hash = JSON.parse(all_characters)
 
-  results = character_hash["results"].select {|chara| chara["name"].downcase == character}
+  results = []
+  still_searching = true
+
+  while still_searching
+    if character_hash["next"]
+      results << character_hash["results"]
+      next_page = RestClient.get(character_hash["next"])
+      character_hash = JSON.parse(next_page)
+    else
+      results << character_hash["results"]
+      still_searching = false
+    end
+  end
+
+  results = results.flatten
+
+  results = results.select {|chara| chara["name"].downcase == character}
 
   if results.length > 0
     film_hash = results[0]["films"].map do |film_url|

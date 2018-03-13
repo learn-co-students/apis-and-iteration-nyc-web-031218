@@ -40,7 +40,7 @@ def parse_character_movies(films)
   sorted_films = films.sort_by{|movie_hash| movie_hash["episode_id"]}
 
   sorted_films.each do |sorted_movie_hash|
-    puts sorted_movie_hash["episode_id"].to_s+" "+ sorted_movie_hash["title"]
+    puts sorted_movie_hash["episode_id"].to_s + " " + sorted_movie_hash["title"]
   end
 end
 

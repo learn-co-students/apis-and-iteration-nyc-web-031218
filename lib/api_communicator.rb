@@ -7,10 +7,15 @@ def get_character_movies_from_api(character)
   all_characters = RestClient.get('http://www.swapi.co/api/people/')
   character_hash = JSON.parse(all_characters)
 
-  results = character_hash["results"].select {|chara| chara["name"] == character}
-  film_hash = results[0]["films"].map do |film_url|
-    film = RestClient.get(film_url)
-    film = JSON.parse(film)
+  results = character_hash["results"].select {|chara| chara["name"].downcase == character}
+
+  if results.length > 0
+    film_hash = results[0]["films"].map do |film_url|
+      film = RestClient.get(film_url)
+      film = JSON.parse(film)
+    end
+  else
+    puts "Character not found"
   end
 
   # iterate over the character hash to find the collection of `films` for the given
@@ -26,15 +31,25 @@ end
 
 def parse_character_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
-  
+  films_hash.each do |film|
+    puts
+    puts "Your character appears in:"
+    puts "Star Wars Episode #{film["episode_id"]}"
+    puts film["title"]
+    puts film["opening_crawl"]
+  end
 end
 
 def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
-  parse_character_movies(films_hash)
+
+  if films_hash
+    parse_character_movies(films_hash)
+  else
+    puts "Still cannot find character"
+  end
 end
 
-get_character_movies_from_api("Luke Skywalker")
 
 ## BONUS
 

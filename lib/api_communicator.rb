@@ -35,7 +35,10 @@ end
 #parse_character_movies(get_character_movies_from_api('Luke Skywalker'))
 
 def show_character_movies(character)
-  name_num = $arr[character.to_i-1]
+  name_num = $arr[(character.to_i)-1]
+  if character.to_i > 17
+    name_num = $arr[(character.to_i)-2]
+  end
   films_hash = get_character_movies_from_api(character)
   puts "#{name_num[name_num.index(' ')..name_num.length]}'s Movies:"
   parse_character_movies(films_hash)
@@ -54,7 +57,10 @@ def display_all_characters
     end
     i+=1
   end
-  $arr.sort{ |y,x| y[0..y.index('.')].to_i <=> x[0..x.index('.')].to_i  }.each{ |character|
+  $arr.sort!{ |y,x|
+
+    y[0..y.index('.')-1].to_i - x[0..x.index('.')-1].to_i  }
+  $arr.each{ |character|
 puts character  }
 end
 

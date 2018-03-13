@@ -18,16 +18,24 @@ def get_character_movies_from_api(character)
   end
 end
 
+def get_movie_from_user
+  puts "Enter title of movie"
+  title = gets.chomp
+
+  get_movies_by_film(title)
+end
+
 def get_movies_by_film(title)
+  title = title.downcase
   all_movies = RestClient.get('http://www.swapi.co/api/films/')
   movies_hash = JSON.parse(all_movies)
 
   results = movies_hash["results"].select {|movie| movie["title"].downcase == title}
 
-  if results.length > 0
-    puts "Title: #{results["title"]}"
-    puts "Director: #{results["director"]}"
-    puts "Release Date: #{results["release_date"]}"
+  if results[0].length > 0
+    puts "Title: #{results[0]["title"]}"
+    puts "Director: #{results[0]["director"]}"
+    puts "Release Date: #{results[0]["release_date"]}"
   else
     puts "Movie not found"
   end

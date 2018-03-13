@@ -6,26 +6,83 @@ def get_character_movies_from_api(character)
   #make the web request
   all_characters = RestClient.get('http://www.swapi.co/api/people/')
   character_hash = JSON.parse(all_characters)
-  
-  # iterate over the character hash to find the collection of `films` for the given
-  #   `character`
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
-  # return value of this method should be collection of info about each film.
-  #  i.e. an array of hashes in which each hash reps a given film
-  # this collection will be the argument given to `parse_character_movies`
-  #  and that method will do some nice presentation stuff: puts out a list
-  #  of movies by title. play around with puts out other info about a given film.
+
+  results = []
+  still_searching = true
+
+  while still_searching
+    if character_hash["next"]
+      results << character_hash["results"]
+      next_page = RestClient.get(character_hash["next"])
+      character_hash = JSON.parse(next_page)
+    else
+      results << character_hash["results"]
+      still_searching = false
+    end
+  end
+
+  results = results.flatten
+
+  results = results.select {|chara| chara["name"].downcase == character}
+
+  if results.length > 0
+    film_hash = results[0]["films"].map do |film_url|
+      film_query(film_url)
+    end
+  else
+    puts "Character not found"
+  end
+end
+
+def get_movie_from_user
+  puts "Enter title of movie"
+  title = gets.chomp
+
+  get_movies_by_film(title)
+end
+
+def get_movies_by_film(title)
+  title = title.downcase
+  all_movies = RestClient.get('http://www.swapi.co/api/films/')
+  movies_hash = JSON.parse(all_movies)
+
+  results = movies_hash["results"].select {|movie| movie["title"].downcase == title}
+
+  if results[0].length > 0
+    puts "Title: #{results[0]["title"]}"
+    puts "Director: #{results[0]["director"]}"
+    puts "Release Date: #{results[0]["release_date"]}"
+  else
+    puts "Movie not found"
+  end
+end
+
+def film_query(film_url)
+  film = RestClient.get(film_url)
+  film = JSON.parse(film)
 end
 
 def parse_character_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
+  films_hash.each do |film|
+    puts
+    puts "Your character appears in:"
+    puts "Star Wars Episode #{film["episode_id"]}"
+    puts film["title"]
+    puts film["opening_crawl"]
+  end
 end
 
 def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
-  parse_character_movies(films_hash)
+
+  if films_hash
+    parse_character_movies(films_hash)
+  else
+    puts "Still cannot find character"
+  end
 end
+
 
 ## BONUS
 

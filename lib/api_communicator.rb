@@ -3,23 +3,48 @@ require 'json'
 require 'pry'
 
 def get_character_movies_from_api(character)
-  #make the web request
-  all_characters = RestClient.get('http://www.swapi.co/api/people/')
+  page_url = 'http://www.swapi.co/api/people/?page=1'
+  all_characters = RestClient.get(page_url)
   character_hash = JSON.parse(all_characters)
-  
-  # iterate over the character hash to find the collection of `films` for the given
-  #   `character`
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
-  # return value of this method should be collection of info about each film.
-  #  i.e. an array of hashes in which each hash reps a given film
-  # this collection will be the argument given to `parse_character_movies`
-  #  and that method will do some nice presentation stuff: puts out a list
-  #  of movies by title. play around with puts out other info about a given film.
+  films = nil
+  while character_hash['next'] != nil && films == nil
+    character_hash['results'].each do |x|
+      if x['name'] == character
+        puts "adding films into the array"
+        films = x['films']
+      end
+    end
+    puts "Loading next page"
+    page_url = character_hash['next']
+    all_characters = RestClient.get(page_url)
+    character_hash = JSON.parse(all_characters)
+  end
+  films.map do |film|
+    film_response = JSON.parse(RestClient.get(film))
+  end
 end
+
+###### ALTERNATIVE WAY OF USING THE SEARCH METHOD ON THE API ######
+# def get_character_movies_from_api(character)
+#   all_characters = RestClient.get('http://www.swapi.co/api/people/?search=' + character)
+#   character_hash = JSON.parse(all_characters)
+#   if character_hash['results'][0] == nil
+#     puts "Sorry, that's not a character. Try again"
+#     run
+#   end
+#   films = character_hash['results'].map do |array|
+#     array['films']
+#   end.flatten
+#   films.map do |film|
+#     film_response = JSON.parse(RestClient.get(film))
+#   end
+# end
 
 def parse_character_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
+  films_hash.each_with_index do |film, i|
+    puts "#{i+1}. #{film["title"]}"
+  end
 end
 
 def show_character_movies(character)

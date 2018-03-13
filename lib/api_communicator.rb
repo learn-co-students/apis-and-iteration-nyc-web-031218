@@ -2,15 +2,12 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-def get_character_movies_from_api(character)
+def get_character_movies_from_api(number)
   #make the web request
   film_info_array = []
-  all_characters = RestClient.get('http://www.swapi.co/api/people/')
-  character_hash = JSON.parse(all_characters)
-  char_hash = character_hash["results"].find{ |hash|
-  hash["name"] == character
- }
-char_hash["films"].each do |film|
+  character = RestClient.get('http://www.swapi.co/api/people/'+number.to_s)
+  character_hash = JSON.parse(character)
+character_hash["films"].each do |film|
 film_info = RestClient.get(film)
 film_info_array.push(JSON.parse(film_info))
 end
@@ -43,12 +40,14 @@ def show_character_movies(character)
 end
 
 def display_all_characters
-  all_characters = RestClient.get('http://www.swapi.co/api/people/')
-  character_hash = JSON.parse(all_characters)
   puts "List of characters: "
   i = 1
-  character_hash["results"].each do |char|
-    puts "#{i}. #{char["name"]}"
+ while i<=87
+   if i != 17
+    character = RestClient.get('http://www.swapi.co/api/people/' + (i).to_s)
+    character_hash = JSON.parse(character)
+    puts "#{i}. #{character_hash["name"]}"
+  end
     i+=1
   end
 end

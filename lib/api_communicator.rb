@@ -49,6 +49,7 @@ def display_all_characters
   i = 1
   character_hash["results"].each do |char|
     puts "#{i}. #{char["name"]}"
+    i+=1
   end
 end
 

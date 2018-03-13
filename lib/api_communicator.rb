@@ -16,7 +16,6 @@ def get_character_movies_from_api(character)
   end.flatten
   films.map do |film|
     film_response = JSON.parse(RestClient.get(film))
-    film_response
     # binding.pry
   end
   # character_hash['results'][0]['films']

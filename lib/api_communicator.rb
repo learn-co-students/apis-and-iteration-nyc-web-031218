@@ -13,23 +13,20 @@ require 'pry'
   #  and that method will do some nice presentation stuff: puts out a list
   #  of movies by title. play around with puts out other info about a given film.
   def url(count)
-
+    all_characters = RestClient.get("https://swapi.co/api/people/?page=#{count}")
+    character_hash = JSON.parse(all_characters)
   end
+
+
 
 def get_character_movies_from_api(character)
   films_hash={}
-
 count =1
 until count==10 do
-  all_characters = RestClient.get("https://swapi.co/api/people/?page=#{count}")
-  character_hash = JSON.parse(all_characters)
+  character_hash = url(count)
   results=character_hash["results"]
-  # next_page=character_hash["next"]
-  # binding.pry
     results.each do |element|
-      # binding.pry
       if element["name"] == character
-        # puts "We got this far"
           list_of_films = character_hash["results"][0]["films"]
           list_of_films.each do |film|
             film= RestClient.get("#{film}")
@@ -40,9 +37,8 @@ until count==10 do
       end
     end
   count+=1
-end# # binding.pry
+end
 films_hash
-# binding.pry
 end
 
 

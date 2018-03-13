@@ -2,7 +2,7 @@
 require 'rest-client'
 require 'json'
 require 'pry'
-
+$arr = []
 def get_character_movies_from_api(number)
   #make the web request
   film_info_array = []
@@ -35,26 +35,26 @@ end
 #parse_character_movies(get_character_movies_from_api('Luke Skywalker'))
 
 def show_character_movies(character)
+  name_num = $arr[character.to_i-1]
   films_hash = get_character_movies_from_api(character)
-  puts "#{character}'s Movies:"
+  puts "#{name_num[name_num.index(' ')..name_num.length]}'s Movies:"
   parse_character_movies(films_hash)
 end
 
 def display_all_characters
   puts "List of characters: "
-  arr = []
   i = 1
  while i<=9
     character = RestClient.get('http://www.swapi.co/api/people/?page=' + (i).to_s)
     character_hash = JSON.parse(character)
     character_hash["results"].each do |character|
       if character["url"][32..-2] != "17"
-        arr.push("#{character["url"][32..-2]}. #{character["name"]}")
+        $arr.push("#{character["url"][32..-2]}. #{character["name"]}")
       end
     end
     i+=1
   end
-  arr.sort{ |y,x| y[0..y.index('.')].to_i <=> x[0..x.index('.')].to_i  }.each{ |character|
+  $arr.sort{ |y,x| y[0..y.index('.')].to_i <=> x[0..x.index('.')].to_i  }.each{ |character|
 puts character  }
 end
 

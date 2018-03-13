@@ -45,6 +45,38 @@ def get_character_movies(character)
   films_collection
 end
 
+def get_movie_title(movie)
+  character_collection = []
+
+  get_characters_from_api.each do |star_wars_characters|
+    star_wars_characters["films"].each do |url|
+      film_info = RestClient.get(url)
+      film_hash = JSON.parse(film_info)
+      if film_hash["title"].downcase == movie.downcase
+        film_hash["characters"].each do |characters_url|
+          character_info = RestClient.get(characters_url)
+          character_profile_hash = JSON.parse(character_info)
+          character_collection << character_profile_hash
+        end
+      end
+    end
+  end
+
+  character_collection
+end
+
+def parse_character_profiles(character_profile_hash)
+  nice_characters_list = []
+
+  character_profile_hash.each do |character|
+    nice_characters_list << character["name"]
+  end
+
+  nice_characters_list.each_with_index do |character, index|
+    puts "#{index + 1}. #{character}"
+  end
+end
+
 def parse_character_movies(films_hash)
   nice_list = []
   films_hash.map do |movie|
@@ -61,6 +93,12 @@ def show_character_movies(character)
   get_characters_from_api
   films_hash = get_character_movies(character)
   parse_character_movies(films_hash)
+end
+
+def show_movie_characters(movie)
+  get_characters_from_api
+  characters_profile_hash = get_movie_title(movie)
+  parse_character_profiles(characters_profile_hash)
 end
 
 ## BONUS

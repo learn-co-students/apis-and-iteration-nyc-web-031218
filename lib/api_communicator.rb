@@ -74,7 +74,7 @@ def get_film_data_from_hash(title, films_hash)
   # iterate over the character hash to find the collection of `films` for the given
   #   `character`
   search = films_hash["results"].select do |film_index|
-    film_index["title"]
+    film_index["title"] == title
   end
   search = search.first
 end
@@ -86,5 +86,9 @@ end
 def show_opening_crawl(title)
   films_hash = import_film_data
   film_data = get_film_data_from_hash(title, films_hash)
-  print_crawl(film_data)
+  if !film_data
+    puts "No search results found."
+  else
+    print_crawl(film_data)
+  end
 end

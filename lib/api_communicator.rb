@@ -1,3 +1,4 @@
+
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -41,15 +42,20 @@ end
 
 def display_all_characters
   puts "List of characters: "
+  arr = []
   i = 1
- while i<=87
-   if i != 17
-    character = RestClient.get('http://www.swapi.co/api/people/' + (i).to_s)
+ while i<=9
+    character = RestClient.get('http://www.swapi.co/api/people/?page=' + (i).to_s)
     character_hash = JSON.parse(character)
-    puts "#{i}. #{character_hash["name"]}"
-  end
+    character_hash["results"].each do |character|
+      if character["url"][32..-2] != "17"
+        arr.push("#{character["url"][32..-2]}. #{character["name"]}")
+      end
+    end
     i+=1
   end
+  arr.sort{ |y,x| y[0..y.index('.')].to_i <=> x[0..x.index('.')].to_i  }.each{ |character|
+puts character  }
 end
 
 #display_all_characters

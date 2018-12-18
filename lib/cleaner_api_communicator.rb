@@ -6,22 +6,7 @@ require 'pry'
 
 
 def get_character_movies_from_api(character)
- #make the web request
- # page = 1
- # iterate over the character hash to find the collection of `films` for the given
- #   `character`
- # collect those film API urls,
- # until page == 10
- #   all_characters =
- #   character_hash = JSON.parse(all_characters)
- #
- #   character_hash["results"].each do |value|
- #       if value["name"] == character
- #         films_hash = value["films"]
- #       end
- #   end
- #   page +=1
- # end
+
  loop do
     character_hash["results"].each do |info|
       # binding.pry
@@ -35,8 +20,6 @@ def get_character_movies_from_api(character)
     end
 end
 
-end # get char
-
 def parse_character_movies(films_hash)
  # binding.pry
  films_hash.each_with_index do |movie_url, index|
@@ -47,7 +30,6 @@ def parse_character_movies(films_hash)
 
  end
 
- # some iteration magic and puts out the movies in a nice list
 end
 
 

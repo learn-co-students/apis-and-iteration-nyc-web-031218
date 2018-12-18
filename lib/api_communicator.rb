@@ -20,10 +20,8 @@ until count==10 do
   character_hash=url(count)
   results=character_hash["results"]
     results.each do |element|
-      # binding.pry
       if element["name"] == character
           film_urls = character_hash["results"][0]["films"] #returns array of film urls that the char has been in
-          # binding.pry
           film_urls.each do |film|
             film= RestClient.get("#{film}")
             parsed_film= JSON.parse(film)
@@ -35,7 +33,6 @@ until count==10 do
   count+=1
 end
 films_hash
-# binding.pry
 end
 
 
